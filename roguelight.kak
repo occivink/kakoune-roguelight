@@ -1,4 +1,4 @@
-decl int radius 15
+decl int radius 10
 face global RogueLightBackground 'rgb:202020,black'
 decl range-specs in_range
 addhl global/roguelight-background fill RogueLightBackground
@@ -6,6 +6,9 @@ addhl global/roguelight-in-range ranges in_range
 hook global InsertMove .* 'roguelight'
 
 def roguelight %{
+    # first, select the a square area around the main cursor
+    # there are many edge cases we have to consider, such as
+    # being close to any of the 4 borders, empty lines, incomplete lines...
     eval -draft -save-regs 'cl/' %{
         exec ';<space>'
         reg c "%val{selection_desc}"
@@ -31,6 +34,9 @@ def roguelight %{
         }
         exec '<a-x>1s<ret>s.<ret>)'
 
+        # now tha it's done, we have to find the visible square and put them
+        # into the range-specs option
+        # we do this in the following (pure) shell scope
         eval %sh{
             radius="$kak_opt_radius"
 
@@ -78,8 +84,8 @@ def roguelight %{
             relative_line_0_based=$((previous_line + radius - center_line))
             eval "line_info_$relative_line_0_based() { max_col=$max_col ; min_col=$min_col ; index=$start_index ; }"
 
-            # sets the 'index' global variable
-            # sets it to '#' if outside boundaries
+            # at this point we have the building blocks to run the algorithm
+            # we define a couple of convenience functions
             eval set -- "$kak_selections"
             index_of() {
                 real_col=$(($1 + center_col))
@@ -109,8 +115,27 @@ def roguelight %{
                 return 0
             }
 
+            # the times_4 stuff is to get nice rounding behavior
+            distance_squared_times_4() {
+                tx=$((2 * $1 - 1))
+                ty=$((2 * $2 - 1))
+                dist=$((tx * tx + ty * ty))
+            }
+            radius_squared_times_4=$((4 * radius * radius))
+
+            highlight_cell() {
+                if is_valid $1 $2; then
+                    real_x=$((center_col + $1))
+                    real_y=$((center_line + $2))
+                    color=$((255 - $3 * 255 / radius_squared_times_4))
+                    printf ' %s.%s,%s.%s|black,rgb:%x%x%x' $real_y $real_x $real_y $real_x $color $color $color
+                fi
+            }
+
+            # finally, we run the algorithm
+            # it's adapted from the excellent "Shadowcasting in c#" series
+            # https://blogs.msdn.microsoft.com/ericlippert/tag/shadowcasting/
             printf 'set window in_range %s' $kak_timestamp
-            r2=$((radius * radius))
             octant=8
             while [ $octant -gt 0 ]; do
                 octant=$((octant-1))
@@ -165,18 +190,16 @@ def roguelight %{
                         y=$topY
                         prevOpaque=-1
                         while [ $y -ge $bottomY ]; do
-                            d2=$(( y * y + x * x))
-                            if [ $d2 -lt $r2 ]; then
+                            distance_squared_times_4 $x $y
+                            cell_in_range=1
+                            [ $dist -gt $radius_squared_times_4 ] && cell_in_range=0
+                            if [ $cell_in_range -eq 1 ]; then
                                 octant_coord $x $y
-                                if is_valid $real_x $real_y; then
-                                    real_x=$((center_col + real_x))
-                                    real_y=$((center_line + real_y))
-                                    printf ' %s.%s,%s.%s|black,rgb:AAAAAA+F' $real_y $real_x $real_y $real_x
-                                fi
+                                highlight_cell $real_x $real_y $dist
                             fi
 
                             curOpaque=0
-                            if [ $d2 -ge $r2 ]; then
+                            if [ $cell_in_range -eq 0 ]; then
                                 curOpaque=1
                             else
                                 octant_coord $x $y
