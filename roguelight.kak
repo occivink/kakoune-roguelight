@@ -127,8 +127,10 @@ def roguelight %{
                 if is_valid $1 $2; then
                     real_x=$((center_col + $1))
                     real_y=$((center_line + $2))
-                    color=$((255 - $3 * 255 / radius_squared_times_4))
-                    printf ' %s.%s,%s.%s|black,rgb:%x%x%x' $real_y $real_x $real_y $real_x $color $color $color
+                    red=$((255 - $3 * 255 / radius_squared_times_4))
+                    green=$((red * 9 / 10))
+                    blue=$((red * 4 / 5))
+                    printf ' %s.%s,%s.%s|black,rgb:%x%x%x' $real_y $real_x $real_y $real_x $red $green $blue
                 fi
             }
 
