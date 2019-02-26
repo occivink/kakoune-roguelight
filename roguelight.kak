@@ -144,19 +144,19 @@ def roguelight %{
                 if [ $octant -eq 1 ]; then
                     octant_coord() { real_x=$1; real_y=$2; }
                 elif [ $octant -eq 2 ]; then
-                    octant_coord() { real_x=$2; real_y=$1; }
-                elif [ $octant -eq 3 ]; then
-                    octant_coord() { real_x=-$2; real_y=$1; }
-                elif [ $octant -eq 4 ]; then
                     octant_coord() { real_x=-$1; real_y=$2; }
-                elif [ $octant -eq 5 ]; then
+                elif [ $octant -eq 3 ]; then
+                    octant_coord() { real_x=$1; real_y=-$2; }
+                elif [ $octant -eq 4 ]; then
                     octant_coord() { real_x=-$1; real_y=-$2; }
+                elif [ $octant -eq 5 ]; then
+                    octant_coord() { real_x=$2; real_y=$1; }
                 elif [ $octant -eq 6 ]; then
-                    octant_coord() { real_x=-$2; real_y=-$1; }
+                    octant_coord() { real_x=-$2; real_y=$1; }
                 elif [ $octant -eq 7 ]; then
                     octant_coord() { real_x=$2; real_y=-$1; }
                 else
-                    octant_coord() { real_x=$1; real_y=-$2; }
+                    octant_coord() { real_x=-$2; real_y=-$1; }
                 fi
                 queue="0|1.0|1.1"
                 while [ -n "$queue" ]; do
