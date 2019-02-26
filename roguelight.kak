@@ -138,9 +138,9 @@ def roguelight %{
             # it's adapted from the excellent "Shadowcasting in c#" series
             # https://blogs.msdn.microsoft.com/ericlippert/tag/shadowcasting/
             printf 'set window in_range %s' $kak_timestamp
-            octant=8
-            while [ $octant -gt 0 ]; do
-                octant=$((octant-1))
+            octant=0
+            while [ $octant -le 7 ]; do
+                octant=$((octant+1))
                 if [ $octant -eq 1 ]; then
                     octant_coord() { real_x=$1; real_y=$2; }
                 elif [ $octant -eq 2 ]; then
