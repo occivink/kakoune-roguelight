@@ -86,7 +86,7 @@ def roguelight %{
 
             # at this point we have the building blocks to run the algorithm
             # we define a couple of convenience functions
-            eval set -- "$kak_selections"
+            eval set -- "$kak_quoted_selections"
             index_of() {
                 real_col=$(($1 + center_col))
                 if [ $real_col -lt 0 ]; then
