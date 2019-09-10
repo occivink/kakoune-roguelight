@@ -202,8 +202,13 @@ def roguelight %{
                             else
                                 octant_coord $x $y
                                 index_of $real_x $real_y
-                                eval "char=\"\$$index\""
-                                is_opaque "$char" && curOpaque=1
+                                if [ $index -eq -1 ]; then
+                                    # invalid coordinate -> opaque
+                                    curOpaque=1
+                                else
+                                    eval "char=\"\${$index}\""
+                                    is_opaque "$char" && curOpaque=1
+                                fi
                             fi
                             if [ $prevOpaque -ne -1 ]; then
                                 if [ $curOpaque -eq 1 ]; then
