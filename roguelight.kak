@@ -59,6 +59,12 @@ def roguelight-refresh %{
             center_line=${kak_main_reg_c%%.*}
             center_col=${kak_main_reg_c##*.}
 
+            if [ $center_col -le $radius ]; then
+                right_offset=$((center_col - 1))
+            else
+                right_offset=$radius
+            fi
+
             # first define some dummy line_info_X functions (so that we don't have to deal with empty lines later)
             line=$((2*radius + 1))
             while [ $line -gt 0 ]; do
@@ -105,18 +111,11 @@ def roguelight-refresh %{
                     index=-1
                     return
                 fi
-                index=$((index + $1 + radius))
-            }
-
-            is_valid() {
-                index_of $1 $2
-                [ $index -eq -1 ] && return 1
-                return 0
+                index=$((index + $1 + right_offset))
             }
 
             is_opaque() {
-                if [ "$1" = ' ' ] || [ "$1" = '
-' ]; then return 1; fi
+                if [ "$1" = ' ' ]; then return 1; fi
                 return 0
             }
 
@@ -129,14 +128,14 @@ def roguelight-refresh %{
             radius_squared_times_4=$((4 * radius * radius))
 
             highlight_cell() {
-                if is_valid $1 $2; then
-                    real_x=$((center_col + $1))
-                    real_y=$((center_line + $2))
-                    red=$((255 - $3 * 255 / radius_squared_times_4))
-                    green=$((red * 9 / 10))
-                    blue=$((red * 4 / 5))
-                    printf ' %s.%s,%s.%s|black,rgb:%x%x%x' $real_y $real_x $real_y $real_x $red $green $blue
-                fi
+                index_of $1 $2
+                [ $index -eq -1 ] && return
+                real_x=$((center_col + $1))
+                real_y=$((center_line + $2))
+                red=$((255 - $3 * 255 / radius_squared_times_4))
+                green=$((red * 9 / 10))
+                blue=$((red * 4 / 5))
+                printf ' %s.%s,%s.%s|black,rgb:%x%x%x' $real_y $real_x $real_y $real_x $red $green $blue
             }
 
             # finally, we run the algorithm
