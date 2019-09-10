@@ -1,5 +1,5 @@
-decl int radius 10
-face global RogueLightBackground 'rgb:202020,black'
+decl int radius 8
+face global RogueLightBackground 'rgb:202020,rgb:101010'
 decl range-specs in_range
 
 def roguelight-enable %{
@@ -43,7 +43,7 @@ def roguelight-refresh %{
         }
         exec '<a-x>1s<ret>s.<ret>)'
 
-        # now tha it's done, we have to find the visible square and put them
+        # now that it's done, we have to find the visible square and put them
         # into the range-specs option
         # we do this in the following (pure) shell scope
         eval %sh{
