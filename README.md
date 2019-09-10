@@ -4,12 +4,7 @@ A silly kakoune plugin to simulate the light system seen in many rogue-like game
 
 # Try it out
 
-Simply do:
-```
-souce roguelight.kak
-roguelight-enable
-```
-to enable it on the current window. Put the cursor on a space, enter insert mode (the default hook is on `InsertMove`) and move the cursor around to see the light change in real-time.
+After sourcing the script, simply do `roguelight-enable` to enable it on the current window. Put the cursor on a space, enter insert mode (the default hook is on `InsertMove`) and move the cursor around to see the light change in real-time.
 
 The file `map` in this repository contains a reasonably interesting map to test it on.
 
