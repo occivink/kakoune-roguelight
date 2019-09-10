@@ -1,11 +1,20 @@
 decl int radius 10
 face global RogueLightBackground 'rgb:202020,black'
 decl range-specs in_range
-addhl global/roguelight-background fill RogueLightBackground
-addhl global/roguelight-in-range ranges in_range
-hook global InsertMove .* 'roguelight'
 
-def roguelight %{
+def roguelight-enable %{
+    addhl buffer/roguelight-background fill RogueLightBackground
+    addhl buffer/roguelight-in-range ranges in_range
+    hook -group roguelight window InsertMove .* roguelight-refresh
+}
+
+def roguelight-disable %{
+    rmhl buffer/roguelight-background
+    rmhl buffer/roguelight-in-range
+    rmhooks window roguelight
+}
+
+def roguelight-refresh %{
     # first, select the a square area around the main cursor
     # there are many edge cases we have to consider, such as
     # being close to any of the 4 borders, empty lines, incomplete lines...
