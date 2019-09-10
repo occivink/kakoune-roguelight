@@ -1,10 +1,10 @@
-decl int radius 8
+decl int roguelight_radius 8
 face global RogueLightBackground 'rgb:202020,rgb:101010'
-decl range-specs in_range
+decl range-specs roguelight_in_range
 
 def roguelight-enable %{
     addhl buffer/roguelight-background fill RogueLightBackground
-    addhl buffer/roguelight-in-range ranges in_range
+    addhl buffer/roguelight-in-range ranges roguelight_in_range
     hook -group roguelight window InsertMove .* roguelight-refresh
 }
 
@@ -24,22 +24,22 @@ def roguelight-refresh %{
         try %{
             # case where we're at the left border
             exec '<a-k>\A^.\z<ret>'
-            reg / "\A(.?.{,%opt{radius}})"
+            reg / "\A(.?.{,%opt{roguelight_radius}})"
         } catch %{
-            # case where we're further than %opt{radius} from the border
+            # case where we're further than %opt{roguelight_radius} from the border
             exec hGh
-            exec "1s\A(.+).{%opt{radius}}\z<ret>"
-            reg / "\A.{%val{selection_length}}(.{,%opt{radius}}.?.{,%opt{radius}})"
+            exec "1s\A(.+).{%opt{roguelight_radius}}\z<ret>"
+            reg / "\A.{%val{selection_length}}(.{,%opt{roguelight_radius}}.?.{,%opt{roguelight_radius}})"
         } catch %{
-            # case where we're closer than %opt{radius} from the border
-            reg / "\A(.{,%val{selection_length}}.?.{,%opt{radius}})"
+            # case where we're closer than %opt{roguelight_radius} from the border
+            reg / "\A(.{,%val{selection_length}}.?.{,%opt{roguelight_radius}})"
         }
         exec gh
         eval -save-regs ^ %{
-            # put up to 'radius' line up in the mark
-            exec -draft -save-regs '' "%opt{radius}<a-C>Z"
-            # put up to 'radius' line down in the mark
-            exec "%opt{radius}C<a-z>a"
+            # put up to 'roguelight_radius' line up in the mark
+            exec -draft -save-regs '' "%opt{roguelight_radius}<a-C>Z"
+            # put up to 'roguelight_radius' line down in the mark
+            exec "%opt{roguelight_radius}C<a-z>a"
         }
         exec '<a-x>1s<ret>s.<ret>)'
 
@@ -47,7 +47,7 @@ def roguelight-refresh %{
         # into the range-specs option
         # we do this in the following (pure) shell scope
         eval %sh{
-            radius="$kak_opt_radius"
+            radius="$kak_opt_roguelight_radius"
 
             # first, dynamically create a bunch of line_info_X functions, where X goes from 0 to 2*radius+1
             # each function sets the global variables $min_col, $max_col, and $index
@@ -141,7 +141,7 @@ def roguelight-refresh %{
             # finally, we run the algorithm
             # it's adapted from the excellent "Shadowcasting in c#" series
             # https://blogs.msdn.microsoft.com/ericlippert/tag/shadowcasting/
-            printf 'set window in_range %s' $kak_timestamp
+            printf 'set window roguelight_in_range %s' $kak_timestamp
             octant=0
             while [ $octant -le 7 ]; do
                 octant=$((octant+1))
