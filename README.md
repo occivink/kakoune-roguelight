@@ -9,7 +9,9 @@ Simply do:
 souce roguelight.kak
 roguelight-enable
 ```
-to enable it on the current window. The file `map` in this repository contains a reasonably interesting map to test it on.
+to enable it on the current window. Put the cursor on a space, enter insert mode (the default hook is on `InsertMove`) and move the cursor around to see the light change in real-time.
+
+The file `map` in this repository contains a reasonably interesting map to test it on.
 
 Spaces are considered to be transparent, everything else is opaque. The light has a radius of `roguelight_radius` (7 by default).
 
