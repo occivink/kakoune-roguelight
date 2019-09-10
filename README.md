@@ -27,6 +27,10 @@ I can run it in realtime with a light radius of <= 10, but that mostly depends o
 
 The code has been tested with dash, bash and busybox sh. It works best with dash.
 
+# What's next?
+
+Bugfixes, probably not much else. This was mostly a fun experiment (and a frustrating debugging experience).
+
 ## License
 
 [Unlicense](http://unlicense.org)
