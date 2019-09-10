@@ -88,14 +88,10 @@ def roguelight %{
             # we define a couple of convenience functions
             eval set -- "$kak_quoted_selections"
             index_of() {
-                real_col=$(($1 + center_col))
-                if [ $real_col -lt 0 ]; then
-                    index=-1
-                    return
-                fi
                 line_0_based=$(($2 + radius))
                 line_info_$line_0_based
                 [ $index -eq -1 ] && return
+                real_col=$(($1 + center_col))
                 if [ $real_col -lt $min_col ] || [ $real_col -gt $max_col ]; then
                     index=-1
                     return
