@@ -19,7 +19,7 @@ def roguelight-refresh %{
     # there are many edge cases we have to consider, such as
     # being close to any of the 4 borders, empty lines, incomplete lines...
     eval -draft -save-regs 'cl/' %{
-        exec ';<space>'
+        exec ';,'
         reg c "%val{selection_desc}"
         try %{
             # case where we're at the left border
@@ -41,7 +41,7 @@ def roguelight-refresh %{
             # put up to 'roguelight_radius' line down in the mark
             exec "%opt{roguelight_radius}C<a-z>a"
         }
-        exec '<a-x>1s<ret>s.<ret>)'
+        exec 'x1s<ret>s.<ret>)'
 
         # now that it's done, we have to find the visible square and put them
         # into the range-specs option
